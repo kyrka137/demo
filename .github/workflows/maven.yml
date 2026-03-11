@@ -1,0 +1,30 @@
+name: Java CI/CD Pipeline
+
+# Mikor induljon el a folyamat? Minden feltöltésnél!
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    # ITT A VARÁZSLAT: A GitHub saját, felhős Linux szerverét kérjük el!
+    runs-on: ubuntu-latest 
+
+    steps:
+    - name: 📥 Kód letöltése a repóból (Checkout)
+      uses: actions/checkout@v4
+
+    - name: ☕ Java 17 környezet beállítása
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: ⚙️ Maven Wrapper futtathatóvá tétele
+      run: chmod +x mvnw
+
+    - name: 🚀 Füsttesztek és Integrációs tesztek futtatása (H2 adatbázissal)
+      run: ./mvnw clean test
